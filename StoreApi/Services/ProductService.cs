@@ -7,6 +7,7 @@ namespace StoreApi.Services
     public class ProductService
     {
         private readonly StoreContext _context;
+        private const int PageSize = 10;
 
         public ProductService(StoreContext context)
         {
@@ -16,6 +17,11 @@ namespace StoreApi.Services
         public async Task<List<Product>> GetProductsAsync()
         {
             return await _context.Products.ToListAsync();
+        }
+
+        public async Task<int> GetTotalProductCountAsync()
+        {
+            return await _context.Products.CountAsync();
         }
 
         public async Task<Product> GetProductByIdAsync(int id)
@@ -77,13 +83,12 @@ namespace StoreApi.Services
                 .ToListAsync();
         }
 
-        public async Task<List<dynamic>> GetProductsWithPaginationAndSelectionAsync(int pageSize, int page)
+        public async Task<List<Product>> GetProductsWithPaginationAsync(int page)
         {
             return await _context.Products
-                .Skip(page * pageSize)
-                .Take(pageSize)
-                .Select(product => new { product.ProductId, product.Title })
-                .ToListAsync<dynamic>();
+                .Skip(page * PageSize)
+                .Take(PageSize)
+                .ToListAsync();
         }
 
         public async Task GenerateProductsAsync(int count)

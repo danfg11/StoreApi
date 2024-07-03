@@ -53,20 +53,37 @@ namespace StoreApi.Endpoints
             .WithName("DeleteProduct")
             .WithTags("Products");
 
-            group.MapGet("/paged", async (ProductService service, int pageSize = 10, int page = 0) =>
+            //group.MapGet("/paged", async (ProductService service, int pageSize = 10, int page = 0) =>
+            //{
+            //    var products = await service.GetProductsWithPaginationAsync(pageSize, page);
+            //    return products.Count > 0 ? Results.Ok(products) : Results.NotFound();
+            //})
+            //.WithName("GetPagedProducts")
+            //.WithTags("Products");
+
+            group.MapGet("/paged/select", async (ProductService service, int page = 0) =>
             {
-                var products = await service.GetProductsWithPaginationAsync(pageSize, page);
-                return products.Count > 0 ? Results.Ok(products) : Results.NotFound();
+                var products = await service.GetProductsWithPaginationAsync(page);
+                var productDtos = products.Select(p => new ProductDto
+                {
+                    ProductId = p.ProductId,
+                    ProductGuid = p.ProductGuid,
+                    SkuNumber = p.SkuNumber,
+                    CategoryId = p.CategoryId,
+                    RecommendationId = p.RecommendationId,
+                    Title = p.Title,
+                    Price = p.Price,
+                    SalePrice = p.SalePrice,
+                    ProductArtUrl = p.ProductArtUrl,
+                    Description = p.Description,
+                    Created = p.Created,
+                    ProductDetails = p.ProductDetails,
+                    Inventory = p.Inventory,
+                    LeadTime = p.LeadTime
+                }).ToList();
+                return Results.Ok(productDtos);
             })
             .WithName("GetPagedProducts")
-            .WithTags("Products");
-
-            group.MapGet("/paged/select", async (ProductService service, int pageSize = 10, int page = 0) =>
-            {
-                var products = await service.GetProductsWithPaginationAndSelectionAsync(pageSize, page);
-                return products.Count > 0 ? Results.Ok(products) : Results.NotFound();
-            })
-            .WithName("GetPagedAndSelectedProducts")
             .WithTags("Products");
 
             // Endpoint para generar 1,000 productos

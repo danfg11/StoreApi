@@ -1,0 +1,68 @@
+﻿@page "/products"
+@inject IProductService ProductService
+
+<h3>Product List</h3>
+
+<div>
+    @if (Products != null && Products.Any())
+    {
+        @foreach (var product in Products)
+        {
+            <div class="product">
+                <h3>@product.Title</h3>
+                <p>Price: @product.Price</p>
+                <button @onclick="() => AddToCart(product)">Add to Cart</button>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No products available.</p>
+    }
+</div>
+
+<div class="pagination">
+    <button @onclick="PreviousPage" disabled="@(CurrentPage == 1)">Previous</button>
+    <button @onclick="NextPage">Next</button>
+</div>
+
+@code {
+    private List<Product> Products { get; set; } = new List<Product>();
+    private int CurrentPage = 1;
+    private bool HasNextPage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProducts();
+    }
+
+    private async Task LoadProducts()
+    {
+        var result = await ProductService.GetProductsAsync(CurrentPage - 1);
+        Products = result;
+        HasNextPage = Products.Count == 10;
+    }
+
+    private async Task PreviousPage()
+    {
+        if (CurrentPage > 1)
+        {
+            CurrentPage--;
+            await LoadProducts();
+        }
+    }
+
+    private async Task NextPage()
+    {
+        if (HasNextPage)
+        {
+            CurrentPage++;
+            await LoadProducts();
+        }
+    }
+
+    private async Task AddToCart(Product product)
+    {
+        await ProductService.AddProductToCart(product);
+    }
+}
