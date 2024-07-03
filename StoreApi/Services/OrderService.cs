@@ -15,16 +15,23 @@ namespace StoreApi.Services
 
         public async Task<List<Order>> GetOrdersAsync()
         {
-            return await _context.Orders.Include(o => o.OrderDetails).ThenInclude(od => od.Product).ToListAsync();
+            return await _context.Orders
+                .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Product)
+                .ToListAsync();
         }
 
         public async Task<Order> GetOrderByIdAsync(int id)
         {
-            return await _context.Orders.Include(o => o.OrderDetails).ThenInclude(od => od.Product).FirstOrDefaultAsync(o => o.OrderId == id);
+            return await _context.Orders
+                .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Product)
+                .FirstOrDefaultAsync(o => o.OrderId == id);
         }
 
         public async Task<Order> CreateOrderAsync(Order order)
         {
+            order.OrderGuid = Guid.NewGuid(); // Asignar Guid único
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
             return order;
@@ -93,6 +100,7 @@ namespace StoreApi.Services
             {
                 orders.Add(new Order
                 {
+                    OrderGuid = Guid.NewGuid(), // Asignar Guid único
                     OrderDate = DateTime.Now,
                     Username = $"user{i}",
                     Name = $"Name {i}",
@@ -109,6 +117,5 @@ namespace StoreApi.Services
             _context.Orders.AddRange(orders);
             await _context.SaveChangesAsync();
         }
-
     }
 }

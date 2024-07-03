@@ -76,7 +76,6 @@ namespace StoreApi.Endpoints
             })
             .WithName("GenerateCategories")
             .WithTags("Categories");
-
         }
     }
 }

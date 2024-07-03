@@ -15,16 +15,17 @@ namespace StoreApi.Services
 
         public async Task<List<CartItem>> GetCartItemsAsync()
         {
-            return await _context.CartItems.Include(ci => ci.Product).ToListAsync();
+            return await _context.CartItems.ToListAsync();
         }
 
         public async Task<CartItem> GetCartItemByIdAsync(int id)
         {
-            return await _context.CartItems.Include(ci => ci.Product).FirstOrDefaultAsync(ci => ci.CartItemId == id);
+            return await _context.CartItems.FirstOrDefaultAsync(ci => ci.CartItemId == id);
         }
 
         public async Task<CartItem> CreateCartItemAsync(CartItem cartItem)
         {
+            cartItem.CartItemGuid = Guid.NewGuid(); // Asignar Guid único
             _context.CartItems.Add(cartItem);
             await _context.SaveChangesAsync();
             return cartItem;
@@ -88,7 +89,8 @@ namespace StoreApi.Services
             {
                 cartItems.Add(new CartItem
                 {
-                    CartId = $"Cart{i}", // Asignar un CartId único para cada ítem
+                    CartItemGuid = Guid.NewGuid(), // Asignar Guid único
+                    CartId = $"Cart{i}",
                     ProductId = products[random.Next(products.Count)].ProductId,
                     Count = random.Next(1, 5),
                     DateCreated = DateTime.Now
@@ -97,6 +99,5 @@ namespace StoreApi.Services
             _context.CartItems.AddRange(cartItems);
             await _context.SaveChangesAsync();
         }
-
     }
 }

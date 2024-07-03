@@ -4,30 +4,25 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace StoreApi.Models;
-
-[Index("ProductId", Name = "IX_ProductId")]
-[Index("StoreId", Name = "IX_StoreId")]
-public partial class Raincheck
+namespace StoreApi.Models
 {
-    [Key]
-    public int RaincheckId { get; set; }
+    public partial class Raincheck
+    {
+        [Key]
+        public int RaincheckId { get; set; }
 
-    public string? Name { get; set; }
+        public Guid RaincheckGuid { get; set; }
 
-    public int ProductId { get; set; }
+        public string? Name { get; set; }
+        public int ProductId { get; set; }
+        public int? Count { get; set; }
+        public double? SalePrice { get; set; }
+        public int StoreId { get; set; }
 
-    public int Count { get; set; }
+        [ForeignKey("ProductId")]
+        public virtual Product Product { get; set; } // Propiedad de navegación para Product
 
-    public double SalePrice { get; set; }
-
-    public int StoreId { get; set; }
-
-    [ForeignKey("ProductId")]
-    [InverseProperty("Rainchecks")]
-    public virtual Product Product { get; set; } = null!;
-
-    [ForeignKey("StoreId")]
-    [InverseProperty("Rainchecks")]
-    public virtual Store Store { get; set; } = null!;
+        [ForeignKey("StoreId")]
+        public virtual Store Store { get; set; } // Propiedad de navegación para Store
+    }
 }

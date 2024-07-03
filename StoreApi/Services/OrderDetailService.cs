@@ -15,16 +15,23 @@ namespace StoreApi.Services
 
         public async Task<List<OrderDetail>> GetOrderDetailsAsync()
         {
-            return await _context.OrderDetails.Include(od => od.Product).Include(od => od.Order).ToListAsync();
+            return await _context.OrderDetails
+                .Include(od => od.Product)
+                .Include(od => od.Order)
+                .ToListAsync();
         }
 
         public async Task<OrderDetail> GetOrderDetailByIdAsync(int id)
         {
-            return await _context.OrderDetails.Include(od => od.Order).Include(od => od.Product).FirstOrDefaultAsync(od => od.OrderDetailId == id);
+            return await _context.OrderDetails
+                .Include(od => od.Product)
+                .Include(od => od.Order)
+                .FirstOrDefaultAsync(od => od.OrderDetailId == id);
         }
 
         public async Task<OrderDetail> CreateOrderDetailAsync(OrderDetail orderDetail)
         {
+            orderDetail.OrderDetailGuid = Guid.NewGuid(); // Asignar Guid único
             _context.OrderDetails.Add(orderDetail);
             await _context.SaveChangesAsync();
             return orderDetail;
@@ -90,6 +97,7 @@ namespace StoreApi.Services
             {
                 orderDetails.Add(new OrderDetail
                 {
+                    OrderDetailGuid = Guid.NewGuid(), // Asignar Guid único
                     OrderId = orders[random.Next(orders.Count)].OrderId,
                     ProductId = products[random.Next(products.Count)].ProductId,
                     Count = random.Next(1, 10),
@@ -99,7 +107,5 @@ namespace StoreApi.Services
             _context.OrderDetails.AddRange(orderDetails);
             await _context.SaveChangesAsync();
         }
-
-
     }
 }

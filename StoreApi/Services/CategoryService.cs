@@ -15,16 +15,17 @@ namespace StoreApi.Services
 
         public async Task<List<Category>> GetCategoriesAsync()
         {
-            return await _context.Categories.Include(c => c.Products).ToListAsync();
+            return await _context.Categories.ToListAsync();
         }
 
         public async Task<Category> GetCategoryByIdAsync(int id)
         {
-            return await _context.Categories.Include(c => c.Products).FirstOrDefaultAsync(c => c.CategoryId == id);
+            return await _context.Categories.FirstOrDefaultAsync(c => c.CategoryId == id);
         }
 
         public async Task<Category> CreateCategoryAsync(Category category)
         {
+            category.CategoryGuid = Guid.NewGuid(); // Asignar Guid único
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
             return category;
@@ -81,11 +82,15 @@ namespace StoreApi.Services
             var categories = new List<Category>();
             for (int i = 0; i < count; i++)
             {
-                categories.Add(new Category { Name = $"Category {i}", Description = $"Description {i}" });
+                categories.Add(new Category
+                {
+                    CategoryGuid = Guid.NewGuid(), // Asignar Guid único
+                    Name = $"Category {i}",
+                    Description = $"Description {i}"
+                });
             }
             _context.Categories.AddRange(categories);
             await _context.SaveChangesAsync();
         }
-
     }
 }
