@@ -1,7 +1,6 @@
 ﻿using StoreApi.Models;
 using StoreApi.Services;
 using StoreApi.Data;
-using System;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -74,97 +73,6 @@ namespace StoreApi.Endpoints
             .WithName("GetPagedAndSelectedRainchecks")
             .WithTags("Rainchecks");
 
-            group.MapGet("/paged/select2", async (RaincheckService service, int pageSize = 10, int page = 0) =>
-            {
-                var rainchecks = await service.GetRainchecksWithPaginationAndSelectionAsync2(pageSize, page);
-                return rainchecks.Count > 0 ? Results.Ok(rainchecks) : Results.NotFound();
-            })
-            .WithName("GetPagedAndSelectedRainchecks2")
-            .WithTags("Rainchecks");
-
-            group.MapGet("/paged/select3", async (StoreContext db, int pageSize = 10, int page = 0) =>
-            {
-                var data = await db.Rainchecks
-                    .Skip(page * pageSize)
-                    .Take(pageSize)
-                    .Include(s => s.Product)
-                    .Include(s => s.Store)
-                    .Select(r => new
-                    {
-                        StoreName = r.Store.Name,
-                        ProductName = r.Product.Title
-                    })
-                    .ToListAsync();
-
-                return data.Any() ? Results.Json(data, new JsonSerializerOptions
-                {
-                    ReferenceHandler = ReferenceHandler.Preserve,
-                    WriteIndented = true
-                }) : Results.NotFound();
-            })
-            .WithName("GetPagedAndSelectedRainchecks3")
-            .WithTags("Rainchecks");
-
-            group.MapGet("/paged/select4", async (StoreContext db, int pageSize = 10, int page = 0) =>
-            {
-                var data = await db.Rainchecks
-                    .Skip(page * pageSize)
-                    .Take(pageSize)
-                    .Include(r => r.Product)
-                    .Include(r => r.Store)
-                    .Select(r => new
-                    {
-                        Raincheck = r,
-                        Product = r.Product,
-                        Store = r.Store
-                    })
-                    .ToListAsync();
-
-                return data.Any() ? Results.Json(data, new JsonSerializerOptions
-                {
-                    ReferenceHandler = ReferenceHandler.Preserve,
-                    WriteIndented = true
-                }) : Results.NotFound();
-            })
-            .WithName("GetPagedAndSelectedRainchecks4")
-            .WithTags("Rainchecks");
-
-            group.MapGet("/paged/selectJorge", async (StoreContext db, int pageSize = 10, int page = 0) =>
-            {
-                var data = await db.Rainchecks
-                    .Skip(page * pageSize)
-                    .Take(pageSize)
-                    .Include(r => r.Product)
-                    .Include(r => r.Store)
-                    .Select(x => new
-                    {
-                        Name = x.Name,
-                        Count = x.Count,
-                        SalePrice = x.SalePrice,
-                        Store = new
-                        {
-                            Name = x.Store.Name,
-                        },
-                        Product = new
-                        {
-                            Name = x.Product.Title,
-                            Category = new
-                            {
-                                Name = x.Product.Category.Name
-                            }
-                        }
-                    })
-                    .ToListAsync();
-
-                return data.Any() ? Results.Json(data, new JsonSerializerOptions
-                {
-                    ReferenceHandler = ReferenceHandler.Preserve,
-                    WriteIndented = true
-                }) : Results.NotFound();
-            })
-            .WithName("GetPagedAndSelectedRainchecksJorge")
-            .WithTags("Rainchecks");
-
             group.MapPost("/generate", async (RaincheckService service) =>
             {
                 await service.GenerateRainchecksAsync(1000);
@@ -172,7 +80,6 @@ namespace StoreApi.Endpoints
             })
             .WithName("GenerateRainchecks")
             .WithTags("Rainchecks");
-
         }
     }
 }

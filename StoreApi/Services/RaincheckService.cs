@@ -15,16 +15,17 @@ namespace StoreApi.Services
 
         public async Task<List<Raincheck>> GetRainchecksAsync()
         {
-            return await _context.Rainchecks.Include(r => r.Product).Include(r => r.Store).ToListAsync();
+            return await _context.Rainchecks.ToListAsync();
         }
 
         public async Task<Raincheck> GetRaincheckByIdAsync(int id)
         {
-            return await _context.Rainchecks.Include(r => r.Product).Include(r => r.Store).FirstOrDefaultAsync(r => r.RaincheckId == id);
+            return await _context.Rainchecks.FirstOrDefaultAsync(r => r.RaincheckId == id);
         }
 
         public async Task<Raincheck> CreateRaincheckAsync(Raincheck raincheck)
         {
+            raincheck.RaincheckGuid = Guid.NewGuid(); // Asignar Guid único
             _context.Rainchecks.Add(raincheck);
             await _context.SaveChangesAsync();
             return raincheck;
@@ -81,8 +82,6 @@ namespace StoreApi.Services
         public async Task<List<dynamic>> GetRainchecksWithPaginationAndSelectionAsync2(int pageSize, int page)
         {
             return await _context.Rainchecks
-                .Include(r => r.Store)
-                .Include(r => r.Product)
                 .Skip(page * pageSize)
                 .Take(pageSize)
                 .Select(raincheck => new
@@ -106,6 +105,7 @@ namespace StoreApi.Services
             {
                 rainchecks.Add(new Raincheck
                 {
+                    RaincheckGuid = Guid.NewGuid(), // Asignar Guid único
                     StoreId = stores[random.Next(stores.Count)].StoreId,
                     ProductId = products[random.Next(products.Count)].ProductId,
                     Count = random.Next(1, 5),
@@ -116,7 +116,5 @@ namespace StoreApi.Services
             _context.Rainchecks.AddRange(rainchecks);
             await _context.SaveChangesAsync();
         }
-
-
     }
 }

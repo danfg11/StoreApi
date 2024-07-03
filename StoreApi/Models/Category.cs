@@ -11,12 +11,9 @@ public partial class Category
     [Key]
     public int CategoryId { get; set; }
 
-    public string Name { get; set; } = null!;
+    public Guid CategoryGuid { get; set; }
 
+    public string? Name { get; set; }
     public string? Description { get; set; }
-
     public string? ImageUrl { get; set; }
-
-    [InverseProperty("Category")]
-    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }

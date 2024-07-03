@@ -15,19 +15,19 @@ namespace StoreApi.Services
             _context = context;
         }
 
-        // Methods for Store
         public async Task<List<Store>> GetStoresAsync()
         {
-            return await _context.Stores.Include(s => s.Rainchecks).ToListAsync();
+            return await _context.Stores.ToListAsync();
         }
 
         public async Task<Store> GetStoreByIdAsync(int id)
         {
-            return await _context.Stores.Include(s => s.Rainchecks).FirstOrDefaultAsync(s => s.StoreId == id);
+            return await _context.Stores.FirstOrDefaultAsync(s => s.StoreId == id);
         }
 
         public async Task<Store> CreateStoreAsync(Store store)
         {
+            store.StoreGuid = Guid.NewGuid(); // Asignar Guid único
             _context.Stores.Add(store);
             await _context.SaveChangesAsync();
             return store;
@@ -61,11 +61,9 @@ namespace StoreApi.Services
             return true;
         }
 
-        // Additional methods for pagination and selection
         public async Task<List<Store>> GetStoresWithPaginationAsync(int pageSize, int page)
         {
             return await _context.Stores
-                .Include(s => s.Rainchecks)
                 .Skip(page * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -85,11 +83,14 @@ namespace StoreApi.Services
             var stores = new List<Store>();
             for (int i = 0; i < count; i++)
             {
-                stores.Add(new Store { Name = $"Store {i}" });
+                stores.Add(new Store
+                {
+                    StoreGuid = Guid.NewGuid(), // Asignar Guid único
+                    Name = $"Store {i}"
+                });
             }
             _context.Stores.AddRange(stores);
             await _context.SaveChangesAsync();
         }
-
     }
 }

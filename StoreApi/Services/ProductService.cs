@@ -15,26 +15,17 @@ namespace StoreApi.Services
 
         public async Task<List<Product>> GetProductsAsync()
         {
-            return await _context.Products
-                .Include(p => p.Category)
-                .Include(p => p.CartItems)
-                .Include(p => p.OrderDetails)
-                .Include(p => p.Rainchecks)
-                .ToListAsync();
+            return await _context.Products.ToListAsync();
         }
 
         public async Task<Product> GetProductByIdAsync(int id)
         {
-            return await _context.Products
-                .Include(p => p.Category)
-                .Include(p => p.CartItems)
-                .Include(p => p.OrderDetails)
-                .Include(p => p.Rainchecks)
-                .FirstOrDefaultAsync(p => p.ProductId == id);
+            return await _context.Products.FirstOrDefaultAsync(p => p.ProductId == id);
         }
 
         public async Task<Product> CreateProductAsync(Product product)
         {
+            product.ProductGuid = Guid.NewGuid(); // Asignar Guid único
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
             return product;
@@ -107,9 +98,10 @@ namespace StoreApi.Services
             {
                 products.Add(new Product
                 {
+                    ProductGuid = Guid.NewGuid(), // Asignar Guid único
                     SkuNumber = $"SKU{i}",
                     CategoryId = categories[random.Next(categories.Count)].CategoryId,
-                    RecommendationId = i + 1, // Asignar un valor de recomendación válido
+                    RecommendationId = i + 1,
                     Title = $"Product {i}",
                     Price = random.Next(10, 500),
                     SalePrice = random.Next(5, 250),
@@ -124,6 +116,5 @@ namespace StoreApi.Services
             _context.Products.AddRange(products);
             await _context.SaveChangesAsync();
         }
-
     }
 }

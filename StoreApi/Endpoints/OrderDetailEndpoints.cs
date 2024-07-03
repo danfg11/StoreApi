@@ -76,7 +76,6 @@ namespace StoreApi.Endpoints
             })
             .WithName("GenerateOrderDetails")
             .WithTags("Order Details");
-
         }
     }
 }

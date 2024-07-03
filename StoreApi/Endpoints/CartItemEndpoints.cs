@@ -1,7 +1,6 @@
 ﻿using StoreApi.Models;
 using StoreApi.Services;
 
-
 namespace StoreApi.Endpoints
 {
     public static class CartItemEndpoints
@@ -77,7 +76,6 @@ namespace StoreApi.Endpoints
             })
             .WithName("GenerateCartItems")
             .WithTags("Cart Items");
-
         }
     }
 }

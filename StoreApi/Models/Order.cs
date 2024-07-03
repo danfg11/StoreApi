@@ -4,44 +4,27 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace StoreApi.Models;
-
-public partial class Order
+namespace StoreApi.Models
 {
-    [Key]
-    public int OrderId { get; set; }
+    public partial class Order
+    {
+        [Key]
+        public int OrderId { get; set; }
 
-    [Column(TypeName = "datetime")]
-    public DateTime OrderDate { get; set; }
+        public Guid OrderGuid { get; set; }
 
-    public string Username { get; set; } = null!;
+        public DateTime? OrderDate { get; set; }
+        public string? Username { get; set; }
+        public string? Name { get; set; }
+        public string? Address { get; set; }
+        public string? City { get; set; }
+        public string? State { get; set; }
+        public string? PostalCode { get; set; }
+        public string? Country { get; set; }
+        public string? Phone { get; set; }
+        public string? Email { get; set; }
+        public decimal? Total { get; set; }
 
-    [StringLength(160)]
-    public string Name { get; set; } = null!;
-
-    [StringLength(70)]
-    public string Address { get; set; } = null!;
-
-    [StringLength(40)]
-    public string City { get; set; } = null!;
-
-    [StringLength(40)]
-    public string State { get; set; } = null!;
-
-    [StringLength(10)]
-    public string PostalCode { get; set; } = null!;
-
-    [StringLength(40)]
-    public string Country { get; set; } = null!;
-
-    [StringLength(24)]
-    public string Phone { get; set; } = null!;
-
-    public string Email { get; set; } = null!;
-
-    [Column(TypeName = "decimal(18, 2)")]
-    public decimal Total { get; set; }
-
-    [InverseProperty("Order")]
-    public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+    }
 }

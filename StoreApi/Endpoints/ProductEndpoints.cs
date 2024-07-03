@@ -69,7 +69,6 @@ namespace StoreApi.Endpoints
             .WithName("GetPagedAndSelectedProducts")
             .WithTags("Products");
 
-
             // Endpoint para generar 1,000 productos
             group.MapPost("/generate", async (ProductService service) =>
             {
@@ -78,7 +77,6 @@ namespace StoreApi.Endpoints
             })
             .WithName("GenerateProducts")
             .WithTags("Products");
-
         }
     }
 }
