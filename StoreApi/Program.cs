@@ -27,6 +27,17 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 
+// Configurar CORS para permitir solicitudes desde todos los orígenes
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 // Configurar opciones de serialización JSON
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
 {
@@ -60,6 +71,10 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "StoreApi v1");
     });
 }
+
+
+// Aplicar la política de CORS
+app.UseCors("AllowAll");
 
 // Mapear endpoints
 app.MapCartItemEndpoints();
