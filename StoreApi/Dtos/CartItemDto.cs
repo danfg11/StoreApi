@@ -9,5 +9,4 @@
         public DateTime DateCreated { get; set; }
         public ProductDto Product { get; set; }
     }
-
 }
